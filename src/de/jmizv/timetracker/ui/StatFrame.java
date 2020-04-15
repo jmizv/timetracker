@@ -11,7 +11,7 @@ public class StatFrame extends javax.swing.JFrame {
     }
 
     void draw(List<Week> weeks) {
-        
+        // how and what to draw ..
         
     }
     

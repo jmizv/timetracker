@@ -2,12 +2,18 @@ package de.jmizv.timetracker.model;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
-import java.util.*;
+
 import java.util.stream.Collectors;
 import de.jmizv.timetracker.TimeTracker;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Week implements Serializable {
 
+    // TODO: replace Calendar by new java.time.* package
     private Calendar week;
     private Map<Integer, List<Integer>> entries = new HashMap<>();
 
@@ -28,6 +34,12 @@ public class Week implements Serializable {
         transformCalendar(this.week);
     }
 
+    /**
+     * Normalize the given calendar to be the first day of the week at exactly
+     * midnight. The given object is modified.
+     *
+     * @param cal
+     */
     public static void transformCalendar(Calendar cal) {
         cal.set(Calendar.MILLISECOND, 0);
         cal.set(Calendar.SECOND, 0);
@@ -58,5 +70,4 @@ public class Week implements Serializable {
         }
         return get.stream().reduce(0, (a, b) -> a + b);
     }
-
 }

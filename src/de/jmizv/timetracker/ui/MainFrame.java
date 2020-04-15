@@ -1,11 +1,9 @@
 package de.jmizv.timetracker.ui;
 
 import java.awt.Dialog;
-import java.awt.event.ActionEvent;
-
+import java.text.MessageFormat;
 import java.util.Calendar;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.ResourceBundle;
 import javax.swing.JProgressBar;
 import de.jmizv.timetracker.ActionListener;
 import de.jmizv.timetracker.ActionListener.Event;
@@ -28,6 +26,10 @@ public class MainFrame extends javax.swing.JFrame {
         initOwnComponents();
     }
 
+    public static String getString(String key) {
+        return ResourceBundle.getBundle("de/jmizv/timetracker/Bundle").getString(key);
+    }
+    
     public ActionListener getActionListener() {
         return actionListener;
     }
@@ -41,10 +43,10 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     private void toggleButtonText() {
-        String text = trackingActive ? java.util.ResourceBundle.getBundle("jmizv/Bundle").getString("ACTIV") : java.util.ResourceBundle.getBundle("jmizv/Bundle").getString("INACTIV");
+        String text = trackingActive ? getString("ACTIV") : getString("INACTIV");
         if (stopOfTracking != null && stopOfTracking.before(startOfTracking) && startOfTracking.get(Calendar.DAY_OF_MONTH) == stopOfTracking.get(Calendar.DAY_OF_MONTH)) {
             long lastPause = startOfTracking.getTimeInMillis() - stopOfTracking.getTimeInMillis();
-            statusLabel.setText(java.text.MessageFormat.format(java.util.ResourceBundle.getBundle("jmizv/Bundle").getString("LASTPAUSE"), new Object[] {lastPause / 60_000}));
+            statusLabel.setText(MessageFormat.format(getString("LASTPAUSE"), new Object[]{lastPause / 60_000}));
         }
         trackingButton.setText(text);
     }
@@ -54,32 +56,34 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     public void setWeekPercentage(int seconds, int additionalSeconds, int factor) {
-        updateProgressBar(weekProgressBar, seconds, additionalSeconds, factor);
+        updateProgressBar(weekProgressBar, seconds, additionalSeconds, factor, "WEEK");
     }
 
-    private String formatPercentage(int h, int m, int s) {
+    private String formatPercentage(int h, int m, int s, String key) {
         if (h == 0) {
-            return java.text.MessageFormat.format(java.util.ResourceBundle.getBundle("jmizv/Bundle").getString("TIME_LEFT_M_S"), new Object[] {(m <= 9 ? "0" : ""), m, (s <= 9 ? "0" : ""), s});
+            return MessageFormat.format(getString(key + "_M_S"), new Object[]{(m <= 9 ? "0" : ""), m, (s <= 9 ? "0" : ""), s});
         }
-        return java.text.MessageFormat.format(java.util.ResourceBundle.getBundle("jmizv/Bundle").getString("TIME_LEFT_H_M"), new Object[] {(h <= 9 ? "0" : ""), h, (m <= 9 ? "0" : ""), m});
+        return MessageFormat.format(getString(key + "_H_M"), new Object[]{(h <= 9 ? "0" : ""), h, (m <= 9 ? "0" : ""), m});
     }
 
     public void setDayPercentage(int seconds, int additionalSeconds, int factor) {
-        updateProgressBar(dayProgressBar, seconds, additionalSeconds, factor);
+        updateProgressBar(dayProgressBar, seconds, additionalSeconds, factor, "DAY");
     }
 
-    private void updateProgressBar(JProgressBar progressBar, int seconds, int additionalSeconds, int factor) {
+    private void updateProgressBar(JProgressBar progressBar, int seconds, int additionalSeconds, int factor, String prefix) {
         int percentage = (int) ((seconds + additionalSeconds) * 100.0 / factor);
         progressBar.setValue(percentage > 100 ? 100 : percentage);
-        int remainingSeconds = factor - (seconds + additionalSeconds);
+        String stringToSet = percentage + "%";
+        int remainingSeconds = Math.abs(factor - (seconds + additionalSeconds));
         int h = remainingSeconds / 3600;
         int m = (remainingSeconds % 3600) / 60;
         int s = remainingSeconds - h * 3600 - m * 60;
-        String stringToSet = percentage + "%";
         if (percentage < 100) {
-            stringToSet += " " + formatPercentage(h, m, s);
+            stringToSet += " " + formatPercentage(h, m, s, "TIME_LEFT");
+        } else if (percentage > 100) {
+            stringToSet += " " + formatPercentage(h, m, s, "TIME_OVER");
         }
-        progressBar.setString(stringToSet);
+        progressBar.setString(getString(prefix) + ": " + stringToSet);
     }
 
     /**
@@ -101,7 +105,7 @@ public class MainFrame extends javax.swing.JFrame {
         jLabel1.setText("jLabel1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        setTitle("TimeTracker v0.2");
+        setTitle("TimeTracker v0.3");
         setResizable(false);
 
         trackingButton.setText("jToggleButton1");
@@ -117,7 +121,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         statusLabel.setText(" ");
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("jmizv/Bundle"); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("de/jmizv/timetracker/Bundle"); // NOI18N
         addButton.setText(bundle.getString("ADD")); // NOI18N
         addButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

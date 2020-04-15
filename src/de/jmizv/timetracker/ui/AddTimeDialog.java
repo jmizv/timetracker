@@ -90,10 +90,11 @@ public class AddTimeDialog extends javax.swing.JDialog {
         dateField = new javax.swing.JFormattedTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("de/jmizv/timetracker/Bundle"); // NOI18N
+        setTitle(bundle.getString("ADD_TIME_DIALOG_TITLE")); // NOI18N
         setResizable(false);
 
         minuteSpinner.setModel(new javax.swing.SpinnerNumberModel(0, 0, 59, 1));
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("jmizv/Bundle"); // NOI18N
         minuteSpinner.setToolTipText(bundle.getString("MINUTE")); // NOI18N
 
         addButton.setText(bundle.getString("ADD")); // NOI18N

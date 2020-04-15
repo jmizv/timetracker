@@ -21,9 +21,10 @@ public class TimeTracker implements ActionListener {
 
     private final static String dataFile = "./data.json";
     private List<Week> weeks;
+    // surely not the best solution to hold the frame here.
     private MainFrame frame;
-    private int workDaysInWeek = 5;
-    private int workingHoursInDay = 8;
+    private int workDaysInWeek = 5; // TODO make configurable
+    private int workingHoursInDay = 8; // TODO make configurable
 
     /**
      * Don't do this at home. These are u
@@ -88,7 +89,6 @@ public class TimeTracker implements ActionListener {
                 return week;
             }
         }
-        log("Now week for today was found.");
         return null;
     }
 
@@ -114,6 +114,7 @@ public class TimeTracker implements ActionListener {
                 }
             }
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
+            // who cares?
         }
         
         MainFrame frame = new MainFrame();
